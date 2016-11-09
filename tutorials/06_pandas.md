@@ -1,12 +1,12 @@
 Materiály k tomuto cvičení jsou k dispozici [na GitHubu][nb].
 
-[nb]: https://github.com/encukou/MI-PYT/blob/pandas/tutorials/06-pandas/pandas-intro.ipynb
+[nb]: https://github.com/cvut/MI-PYT/blob/master/tutorials/06-pandas/pandas-intro.ipynb
 
 ---
 
 Vašim úkolem za pět bodů je odpovědět na otázky a vyřešit úkoly níže.
 
-Řešení může být zpracováno buď jako Jupyter Notebook, ve kterém bude patrné
+Řešení může být zpracováno buď jako Jupyter Notebook, ve kterém bude patrné,
 která část kódu odpovídá na kterou otázku, nebo jako skript v jazyce Python,
 který otázky a odpovědi bude vypisovat na standardní výstup např. tímto stylem:
 
@@ -64,6 +64,6 @@ Otázky a úkoly:
 * Pro každou třídu vypište kolik pasažérů dané třídy nastoupilo na loď, kolik
   jich přežilo, a kolik to dělá procent přeživších.
 * Vykreslete graf procenta přeživších podle dekády věku (t.j. procento pro
-  0-9 let, 10-20 let, atd.).
+  0-9 let, 10-19 let, atd.).
 * Závisí na sobě třída a věk pasažéra? Jak? Vykreslete graf(y), které tuto
   závislost znázorňují.
