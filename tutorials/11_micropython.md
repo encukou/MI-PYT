@@ -1,3 +1,6 @@
+
+POZOR! Tato stránka je pro kurz MI-PYT.
+
 # MicroPython (na ESP8266/NodeMCU)
 
 Výukové materiály:

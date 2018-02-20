@@ -1,3 +1,6 @@
+
+POZOR! Tato stránka je pro kurz MI-PYT.
+
 # Generátory a AsyncIO
 
 Výukové materiály:

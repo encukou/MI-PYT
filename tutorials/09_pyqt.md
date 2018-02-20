@@ -1,3 +1,6 @@
+
+POZOR! Tato stránka je pro kurz MI-PYT.
+
 GUI v Pythonu: PyQt5
 ====================
 
