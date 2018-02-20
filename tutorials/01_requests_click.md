@@ -93,4 +93,4 @@ magisterského studia na ČVUT.
 Úkoly byly pro každý semestr jiné:
 
 1. https://github.com/cvut/MI-PYT/blob/b161/tutorials/01_requests_click.md#%C3%9Akol
-2. https://github.com/cvut/MI-PYT/blob/master/tutorials/01_requests_click.md#%C3%9Akol
+2. https://github.com/cvut/MI-PYT/blob/b171/tutorials/01_requests_click.md#%C3%9Akol
