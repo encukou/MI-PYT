@@ -1,129 +1,111 @@
 
-POZOR! Tato stránka je pro kurz MI-PYT.
-
 Webové aplikace: Flask
 ======================
 
 Výukové materiály o Flasku:
-[naucse.python.cz](http://naucse.python.cz/2017/mipyt-zima/intro/flask/),
+[naucse.python.cz](http://naucse.python.cz/2018/pyknihovny-jaro/intro/flask/),
 [GitHub](https://github.com/pyvec/naucse.python.cz/tree/master/lessons/intro/flask).
 
 Výukové materiály o deploymentu:
-[naucse.python.cz](http://naucse.python.cz/2017/mipyt-zima/intro/deployment/),
+[naucse.python.cz](http://naucse.python.cz/2018/pyknihovny-jaro/intro/deployment/),
 [GitHub](https://github.com/pyvec/naucse.python.cz/tree/master/lessons/intro/deployment).
 
 Výukové materiály o PythonAnywhere:
-[naucse.python.cz](http://naucse.python.cz/2017/mipyt-zima/intro/deployment/pythonanywhere/),
+[naucse.python.cz](http://naucse.python.cz/2018/pyknihovny-jaro/intro/deployment/pythonanywhere/),
 [GitHub](https://github.com/pyvec/naucse.python.cz/tree/master/lessons/intro/deployment).
 
 Úkol
 ----
 
-Vaším úkolem za 5 bodů je rozšířit command line aplikaci z minulého
-cvičení o webové rozhraní. Stávající funkcionalita ale musí být zachována,
-mimo konzole půjde tedy nevíc spustit web server a to pomocí `flask run` a
-zároveň vlastním příkazem `run_server` (viz níže, hint: [application factory](http://flask.pocoo.org/docs/0.12/patterns/appfactories/)).
+Tvým úkolem je naprogramovat webovou službu, která bude automaticky
+reagovat na komentáře na GitHubu.
 
-Výslednou aplikaci nasaďte na PythonAnywhere, nebo jiný veřejný hosting.
-Odkaz na běžící aplikaci a repozitář nám pošlete e-mailem. V repozitáři prosím 
-nastavte tag `v0.2`.
+Jak takovou reakci přidat se dozvíš v [dokumentaci](https://developer.github.com/v3/reactions/).
+Pozor na to, že toto API ještě není úplně doladěné;
+je zatím potřeba přidat do hlavičky `Accept` dát speciální hodnotu
+`application/vnd.github.squirrel-girl-preview+json`.
 
-Testy specifikující detailní chování a možné použít ke kontrole opět včetně
-skeletonu najdete v repozitáři [MarekSuchanek/labelord_tests](https://github.com/MarekSuchanek/labelord_tests)
-ve větvi `flask`.
+Založ si repozitář, kde budeš podobnvěci zkoušet, v něm v záložce
+*issues* nahlaš fiktivní chybu a přidejte pár komentářů.
 
-### Intro
+Pozor na to, že GitHub odlišuje "reactions for an issue comment", reakce na
+opravdové komentáře,
+a "reaction for an issue", reakci na popisek který na webu vypadá jako
+první konemtář.
+Po kliknutí na čas u komentáře se ti v prohlížeči v URL objeví číselné `id`
+konkrétního příspěvku, který pak můžete použít v API.
+Pro popisek použijte číslo samotné *issue*.
 
-Současná aplikace vám sice umožňuje snadno nastavit štítky pro více
-repozitářů, ale přidávání nových štítků přes konfigurační soubor a spouštěním
-`update` je nepraktické. Naštěstí GitHub vás může o změně štítků sám
-informovat pomocí webhooku. Úkolem je vytvořit webovou aplikaci, která
-takové zprávy přijme, zpracuje a příslušně změní štítky v ostatních
-nastavených repozitářích. Díky tomu můžete vytvářet štítky odkudkoliv
-přímo na GitHubu a aplikace se postará o master-to-master replikaci.
+Zkus si reagovat na komentáře pomocí Requests.
+Potřebná data předáš pomocí argumentu `json`, např. následující kód
+přidá smajlíka k [popisku mé testovací *issue*](https://github.com/encukou/test-repo/issues/1):
 
-### Specifikace
-
-1. Konfigurační soubor je totožný pro konzolovou i webovou aplikaci. Navíc
-   se v sekci `[github]` přidá pouze položka `webhook_secret`. Jelikož je
-   nutné umožnit spouštět aplikaci pomocí `flask run`, musí být umožněno
-   specifikovat konfigurační soubor přes proměnnou prostředí `LABELORD_CONFIG`,
-   výchozí hodnota zůstává totožná (`./config.cfg`).
-
-2. Počáteční stav si uživatel aplikace provede pomocí již implementované
-   CLI aplikace (`run update/replace`). Při startu webové aplikace se tedy
-   pouze načte konfigurace ze souboru (neprobíhá žádná komunikace).
-
-3. Mimo spouštění přes `flask run` je možné aplikaci spustit pomocí `click` příkazu `run_server`:
-    * `--host`/`-h` = specifikace hostname (shodně jako `flask run`, výchozí `127.0.0.1`)
-    * `--port`/`-p` = specifikace portu (shodně jako `flask run`, výchozí `5000`)
-    * `--debug`/`-d` = debug mód (shodně jako nastavení `FLASK_DEBUG=true`, flag)
-    * (dobrovolně) další možnosti z `flask run`
-
-4. Informativní část aplikace = `GET /`:
-    * Popisuje k čemu aplikace slouží.
-    * Obsahuje seznam repozitářů, které jsou pomocí konfiguračního souboru
-      povolené k replikaci (je jedno jestli použijete pro výpis tabulku,
-      seznam nebo jinou formu).
-    * Seznamu obsahuje odkazy na jednotlivé repozitáře na GitHubu (zkuste
-      použít filtr).
-
-5. Webhook část aplikace = `POST /`:
-    * GitHub na tuto cestu zašle `POST` požadavek s informací o změně
-      štítků a aplikace jej zpracuje - změny zpropaguje do ostatních repozitářů.
-      Například přijde-li informace o události vytvoření štítku z `repo1` (je 
-      povolen v konfiguračním souboru a podpis sedí), tak aplikace pošlě požadavek
-      na vytvoření tohoto štítku pro všechno ostatní repozitáře z konfiguračního
-      souboru (to, že neskončí dobře - například štítek v některém repozitáři už
-      existuje - aplikaci nezajímá). Je nutné si dát pozor na to, že změna štítků 
-      provedená aplikací může opět vyvolat ze strany GitHubu požadavek s informací 
-      o změně.
-    * Nejprve ověřte, že přijatý webhook má správný podpis (viz níže).
-    * Poté zjistěte, zda zpráva obsahuje správnou událost a repozitář
-      (je v seznamu povolených repozitářů k replikaci).
-    * Vaše aplikace musí odpovědět na události `ping` a `label`.
-    * Pro vyzkoušení, co GitHub posílá, doporučujeme https://requestb.in.
-    * Použijte webhooky s obsahem typu `application/json`.
-
-6. Přesné požadované chování včetně návratových kódů pro dané situace
-   naleznete v dodaných testech.
-
-#### Zabezpečení webhooku
-
-Protože příjmání událostí z internetu může být riskantní,
-nabízí Github možnost doplnit do vašeho webhooku `secret` položku.
-
-Abyste rozpoznali, že vám událost poslal právě Github, je ke každému
-requestu z Githubu přiložená hlavička `X-Hub-Signature`, např:
+```python
+response = session.post(
+    'https://api.github.com/repos/encukou/test-repo/issues/1/reactions',
+    headers={'Accept': 'application/vnd.github.squirrel-girl-preview+jso'},
+    json={'content': 'laugh'}
+)
+response.raise_for_status()
 ```
-X-Hub-Signature: sha1=0b861d9a594a4f421cabcdef75d5aefc46df8967
+
+Potom vytvoř pomocí `flask` webovou službu, která bude po navštívení určitých
+URL rozdávat reakce ve tvém (či mém) testovacím repozitáři.
+
+Program si nech zkontrolovat od kouče, jestli v něm není bezpečnostní chyba,
+a nasaď na PythonAnywhere.
+
+
+## Bonus 1: Formulář
+
+Umíš-li v HTML dělat formuláře, nastuduj si jak se ve Flasku
+zpracovává [metoda POST](http://flask.pocoo.org/docs/0.12/quickstart/#http-methods)
+a [data z formuláře](http://flask.pocoo.org/docs/0.12/quickstart/#the-request-object).
+Pak udělej na přiřazování reakcí formulář.
+
+
+## Bonus 2: Webhook
+
+GitHub umí takzvané *webhooks*: když si to v repozitáři nastavíš,
+po určitých akcích – například když někdo přidá komentář – GitHub
+automaticky navštíví danou URL a pošle spoustu
+informací.
+Všechno je to popsáno v [dokumentaci](https://developer.github.com/webhooks/).
+
+Webhook se přidá ze *Settings* u repozitáře, v sekci Webhooks.
+Zkus si nějaký webhook přidat pro URL `https://example.com/` a volbu
+*Send me everything*.
+Pak přidej v repozitář komentář.
+Zpátky v sekci Webhooks si rozklikni záznam webhooku a v *Recent Deliveries*
+si rozklikni informace, které Github poslal.
+
+Zkus udělat server, který na každý nový komentář s textem `Jupí!`
+zareaguje smajlíkem.
+
+Pozor na to, že adresy jako `localhost`, `0.0.0.0`, `127.0.0.1` fungují jen
+z tvého počítače. GitHub se k nim nedostane.
+Než tedy začneš webhook používat, musíš službu nasadit.
+
+Do té doby si svoji službu můžeš lokálně (na svém počítači) otestovat pomocí
+Requests: pomocí `json` posílej taková data, která by poslal GitHub.
+
+Ve Flasku se k poslaným informacím dostaneš pomocí
+[`request.get_json()`](http://flask.pocoo.org/docs/0.12/api/#flask.Request.get_json):
+
+```python
+from flask import request
+
+...
+
+request.get_json()
 ```
-která vám říká, že pokud použijete HMAC hexdigest
-s odpovídající hash funkcí a s klíčem, který je právě uvedený v položce `secret`,
-na celé tělo requestu a vámi spočítaný výsledek se shoduje s tím v hlavičce
-`X-Hub-Signature`, tak tento request přišel z Githubu, z vámi zabezpečeného hooku
-a dá se mu tedy věřit.
-Více informací a příklad v Ruby je na [github securing].
 
-[webhook]: https://developer.github.com/webhooks/
-[github securing]: https://developer.github.com/webhooks/securing/
 
-------------------------------------------------------------------------
+## Úkoly pro pokročilé
 
-Opět vám dodané testy poskytují příklady a detailní požadavky na implementace,
-ale současně vás také značně omezují v kreativitě. Stále můžete ale přidat
-některé funkce navíc se zachováním splnění testů (například přidávání,
-kontrola a odstranění webhooku z repozitáře, spouštění `update` a `replace`
-z webového rozhraní, znovunačtení konfigurace, vypisování aktuálních štítků
-pro zadaný repozitář nebo  zobrazování rozdílů ve štítcích mezi vybranými
-repozitáři) pro vyzkoušení si dalších možností  frameworku `flask` a dalších
-pythonních knihoven. Pokud ale umožníte změny ve vašich repozitářích z
-webové aplikace, pak byste ji měli adekvátně zabezpečit (například pomocí
-[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication)
-v kombinaci s HTTPS).
+Nestačí-li vám to, zkuste úkoly, které jsme pro tuto lekci zadali studentům
+magisterského studia na ČVUT.
+Úkoly byly pro každý semestr jiné a navazovaly na úkoly předchozí:
 
-Během vývoje je vhodné využít i logování: http://flask.pocoo.org/docs/dev/logging/
-
-### Referenční řešení
-
-Naše refereční řešení si můžete prohlédnout zde: [v0.2@MarekSuchanek/labelord](https://github.com/MarekSuchanek/labelord/releases/tag/v0.2)
+1. https://github.com/cvut/MI-PYT/blob/b161/tutorials/02_flask.md#%C3%9Akol
+2. https://github.com/cvut/MI-PYT/blob/b171/tutorials/02_flask.md#%C3%9Akol
