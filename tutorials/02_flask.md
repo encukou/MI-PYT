@@ -25,13 +25,13 @@ Pozor na to, že toto API ještě není úplně doladěné;
 je zatím potřeba přidat do hlavičky `Accept` dát speciální hodnotu
 `application/vnd.github.squirrel-girl-preview+json`.
 
-Založ si repozitář, kde budeš podobnvěci zkoušet, v něm v záložce
+Založ si repozitář, kde budeš podobné věci zkoušet, v něm v záložce
 *issues* nahlaš fiktivní chybu a přidejte pár komentářů.
 
 Pozor na to, že GitHub odlišuje "reactions for an issue comment", reakce na
 opravdové komentáře,
 a "reaction for an issue", reakci na popisek který na webu vypadá jako
-první konemtář.
+první komentář.
 Po kliknutí na čas u komentáře se ti v prohlížeči v URL objeví číselné `id`
 konkrétního příspěvku, který pak můžete použít v API.
 Pro popisek použijte číslo samotné *issue*.
