@@ -38,7 +38,7 @@ Na vstupu bude bludiště uložené v matici, kde:
 
 V bludišti se lze pohybovat pouze horizontálně nebo veritkálně. Hranice matice jsou neprůchozí.
 
-Funkce vrátí matici, kde pro každé políčko, ze kterého se dá dostat do cíle, bude délka nejkratší cesty k cíli, jinak -1. (Pro cíl tedy v téhle matici bude 0, pro zdi `-1`, pro nedostupná políčka `-1`).
+Funkce vrátí matici, kde pro každé políčko, ze kterého se dá dostat do cíle, bude délka nejkratší cesty k cíli, jinak -1. (Pro cíl tedy v téhle matici bude `0`, pro volná políčka těsně vedle cíle `1`. Pro zdi pak `-1`, pro nedostupná políčka `-1`.)
 
 Bonus: Zkus zařídit, aby program fungoval i pro jiné druhy bludišť než ty co
 generuje funkce `create_maze`.
